@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
-import { GameBoard } from "@/components/ormanisms/GameBoard";
-import { GameStatus } from '@/components/ormanisms/GameStatus';
+import { GameBoard } from "@/components/ormanisms/GameBoard/MarkGameBoard";
+import { GameStatus } from '@/components/ormanisms/GameStatus/MarkGameStatus';
 import { GameState, Player, markGameTitle, isCellEmpty, getWinner } from './features';
 import style from '@/styles/MarkGame.module.css';
 
@@ -58,7 +58,7 @@ export const MarkGame: React.FC = () => {
             }
             var winner = getWinner(gameState, index);
             var draw = boardData.filter((cell)=>cell == '').length == 0;
-            setGameState({boardWidth, boardData, currentPlayer, winner, draw});                        
+            setGameState({boardWidth, boardData, currentPlayer, winner, draw});
           } else {
             console.debug('invelid index!');
           }
