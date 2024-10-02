@@ -1,5 +1,4 @@
-// [!] exportで何ができるのか。
-//
+//! exportで何ができるのか。
 export enum Player {
     Maru = '⭕️',
     Batsu = '❌'
@@ -13,8 +12,7 @@ export interface GameState {
     draw: boolean;
 }
 
-// [!] 変数にはどのような値が入っているのか
-//
+//! 変数にはどのような値が入っているのか
 export const markGameTitle = () => {
     return 'まるばつゲーム';
 }

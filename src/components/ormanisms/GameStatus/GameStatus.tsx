@@ -13,11 +13,12 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
     return <div>
         <p className='desc'>GameStatus.tsx</p>
         <div className='small'>
-            {// [!] タグの中で条件と&&でHTML出力がどうなるのか。
-             //
-            winner == null && !draw
-                && <>現在のプレイヤー：{currentPlayer == Player.Maru
-                ? <>⭕️(まる)</> : <>❌(ばつ)</>}<br /></>}
+            {
+                //! タグの中で条件と&&でHTML出力がどうなるのか。
+                winner == null && !draw
+                    && <>現在のプレイヤー：{currentPlayer == Player.Maru
+                    ? <>⭕️(まる)</> : <>❌(ばつ)</>}<br /></>
+            }
             {winner != null && <>{winner}が勝ちました。<br /></>}
             <div onClick={() => {onGameResetClick();}}>リセット</div>
         </div>
