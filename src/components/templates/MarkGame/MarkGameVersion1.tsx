@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { GameBoard } from "@/components/ormanisms/GameBoard";
 import { GameStatus } from '@/components/ormanisms/GameStatus';
 import { GameState, Player, markGameTitle, isCellEmpty, getWinner } from './features';
-import style from '@/styles/MarkGameVersion1.module.css';
+import style from '@/styles/MarkGame.module.css';
 
 var initEffect = false;
 
