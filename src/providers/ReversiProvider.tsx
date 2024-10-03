@@ -7,7 +7,7 @@ export enum Player {
   White = '○'
 }
 
-interface ReversiState {
+export interface ReversiState {
   boardWidth: number;
   boardData: string[];
   currentPlayer: Player;

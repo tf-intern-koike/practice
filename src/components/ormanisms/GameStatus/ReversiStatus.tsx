@@ -1,4 +1,4 @@
-import { GameState, Player } from '@/components/templates/Reversi/features';
+import { ReversiState as GameState, Player } from '@/providers/ReversiProvider';
 
 export type GameStatusProps = {
   gameState: GameState,

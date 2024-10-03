@@ -1,15 +1,4 @@
-export enum Player {
-  Black = '●',
-  White = '○'
-}
-
-export interface GameState {
-  boardWidth: number;
-  boardData: string[];
-  currentPlayer: Player;
-  winner: Player | null;
-  isDraw: boolean;
-}
+import { ReversiState as GameState, Player } from '@/providers/ReversiProvider';
 
 export const ReversiTitle = () => {
   return 'リバーシ';
