@@ -8,7 +8,7 @@ export interface GameState {
   boardData: string[];
   currentPlayer: Player;
   winner: Player | null;
-  draw: boolean;
+  isDraw: boolean;
 }
 
 export const ReversiTitle = () => {
@@ -120,7 +120,7 @@ export function getStonesToReverse(gameState: GameState, index: number): number[
       //  相手の石の方向へ、距離を増やしながら、判定する
       while (true) {
         // 判定の対象となるマス
-        // TODO 左右の境界を突破しないようにする
+        // ? 左右の境界を突破しているかどうか不詳
         var target_old = index + direction * distance;
         distance++;
         var target = index + direction * distance;
@@ -147,7 +147,39 @@ export function getStonesToReverse(gameState: GameState, index: number): number[
   return stonesToReverse;
 }
 
-export function getWinner(gameState: GameState, index: number) {
-  // TODO implements
+export function getWinner(gameState: GameState) {
+  var boardData = gameState.boardData;
+
+  // 片方の石が無くなったとき
+  var blackStones = boardData.filter((cell) => cell == Player.Black);
+  if (blackStones.length == 0) {
+    return Player.White;
+  }
+  var whiteStones = boardData.filter((cell) => cell == Player.White);
+  if (whiteStones.length == 0) {
+    return Player.Black;
+  }
+  // すべてのマスが埋まったとき
+  if (boardData.filter((cell)=>cell == '').length == 0) {
+    if (blackStones.length < whiteStones.length) {
+      return Player.White;
+    } else if (blackStones.length > whiteStones.length) {
+      return Player.Black;
+    }
+  }
   return null;
+}
+
+export function checkIfDraw(gameState: GameState) {
+  var boardData = gameState.boardData;
+  var blackStones = boardData.filter((cell) => cell == Player.Black);
+  var whiteStones = boardData.filter((cell) => cell == Player.White);
+
+  // すべてのマスが埋まったとき
+  if (boardData.filter((cell) => cell == '').length == 0) {
+    if (blackStones.length == whiteStones.length) {
+      return true;
+    }
+  }
+  return false;
 }

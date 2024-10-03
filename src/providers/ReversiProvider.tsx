@@ -1,4 +1,4 @@
-import { getOpponentPlayer, getStonesToReverse, getWinner } from "@/components/templates/Reversi/features";
+import { getOpponentPlayer, getStonesToReverse, getWinner, checkIfDraw } from "@/components/templates/Reversi/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
@@ -12,7 +12,7 @@ interface ReversiState {
   boardData: string[];
   currentPlayer: Player;
   winner: Player | null;
-  draw: boolean;
+  isDraw: boolean;
 }
 interface ReversiContext {
   gameState: ReversiState,
@@ -49,7 +49,7 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
     boardData,
     currentPlayer: Player.Black,
     winner: null,
-    draw: false
+    isDraw: false
   };
   const initReversiState = (() => {
     dispatch({type: ActionType.updateGameState, payload: {
@@ -72,10 +72,10 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
       }
 
       currentPlayer = getOpponentPlayer(currentPlayer);
-      var winner = getWinner(gameState, index);
-      var draw = boardData.filter((cell)=>cell == '').length == 0;
+      var winner = getWinner(gameState);
+      var isDraw = checkIfDraw(gameState);
       dispatch({type: ActionType.updateGameState, payload: {
-        gameState: {boardWidth, boardData, currentPlayer, winner, draw}
+        gameState: {boardWidth, boardData, currentPlayer, winner, isDraw}
       }});
     } else {
       console.debug('invelid index!');
