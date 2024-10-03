@@ -69,6 +69,11 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
       var currentPlayer = gameState.currentPlayer;
       var boardWidth = gameState.boardWidth;
       boardData[index] = currentPlayer;
+
+      for (var stone of stonesToReverse) {
+        boardData[stone] = currentPlayer;
+      }
+
       if (currentPlayer == Player.Black) {
         currentPlayer = Player.White;
       } else {
