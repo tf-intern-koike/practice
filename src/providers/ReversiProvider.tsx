@@ -38,18 +38,15 @@ type Action =
 export const ReversiProvider: React.FC<{children: ReactNode}> = ({
   children
 }) => {
+  var boardData = Array(64).fill('');
+  boardData[27] = '○';
+  boardData[28] = '●';
+  boardData[35] = '●';
+  boardData[36] = '○';
+
   var firstGameState: ReversiState = {
     boardWidth: 8,
-    boardData: [
-      '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '',
-      '', '', '', '○', '●', '', '', '',
-      '', '', '', '●', '○', '', '', '',
-      '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', '',
-      '', '', '', '', '', '', '', ''
-    ],
+    boardData,
     currentPlayer: Player.Black,
     winner: null,
     draw: false
