@@ -1,4 +1,4 @@
-import { getWinner, isCellEmpty } from "@/components/templates/Reversi/features";
+import { getStonesToReverse, getWinner } from "@/components/templates/Reversi/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
@@ -61,7 +61,10 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
   });
   const onGameBoardClick = (index: number) => {
     console.debug('click index=' + index);
-    if (isCellEmpty(gameState, index) && gameState.winner == null) {
+
+    var stonesToReverse = getStonesToReverse(gameState, index);
+
+    if (stonesToReverse.length > 0 && gameState.winner == null) {
       var boardData = gameState.boardData;
       var currentPlayer = gameState.currentPlayer;
       var boardWidth = gameState.boardWidth;
