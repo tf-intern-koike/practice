@@ -1,4 +1,4 @@
-import { getStonesToReverse, getWinner } from "@/components/templates/Reversi/features";
+import { getOpponentPlayer, getStonesToReverse, getWinner } from "@/components/templates/Reversi/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
@@ -74,11 +74,7 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
         boardData[stone] = currentPlayer;
       }
 
-      if (currentPlayer == Player.Black) {
-        currentPlayer = Player.White;
-      } else {
-        currentPlayer = Player.Black;
-      }
+      currentPlayer = getOpponentPlayer(currentPlayer);
       var winner = getWinner(gameState, index);
       var draw = boardData.filter((cell)=>cell == '').length == 0;
       dispatch({type: ActionType.updateGameState, payload: {

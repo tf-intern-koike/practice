@@ -77,7 +77,7 @@ function getNeighborhoods(index: number): number[] {
   return neighborhoods;
 }
 
-function getOpponentPlayer(currentPlayer: Player): Player {
+export function getOpponentPlayer(currentPlayer: Player): Player {
   if (currentPlayer == Player.Black) {
     return Player.White;
   } else {
