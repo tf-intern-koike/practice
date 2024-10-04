@@ -1,4 +1,4 @@
-import { GameState, convertReversiCols } from '@/components/templates/Reversi/features';
+import { ReversiState as GameState } from '@/providers/ReversiProvider';
 import style from '@/styles/GameBoard.module.css';
 
 type SquareProps = {
@@ -16,27 +16,26 @@ const Square: React.FC<SquareProps> = ({children, onSquareClick}) => {
 
 export type GameBoardProps = {
   gameState: GameState,
-  onGameBoardClick: (index: number) => void;
+  onGameBoardClick: (row: number, col: number) => void;
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({gameState, onGameBoardClick}) => {
   const boardWidth = gameState.boardWidth;
   var boardData = gameState.boardData;
-  var cols = convertReversiCols(boardWidth, boardData);
 
   return <div>
     <p className='desc'>GameBoard.tsx</p>
     <table>
     {
     // 各行を出力する
-    cols.map((col, colIdx) =>
-      <tbody key={'board-tbody-' + colIdx}>
-      <tr key={'board-tr-' + colIdx}>
+    boardData.map((row, rowIdx) =>
+      <tbody key={'board-tbody-' + rowIdx}>
+      <tr key={'board-tr-' + rowIdx}>
       {
       // 各行ごとの値を出力する
-      col.map((cell, rowIdx) =>
-        <Square key={'board-tr-' + colIdx * boardWidth + rowIdx} onSquareClick={
-          () => {onGameBoardClick(colIdx * boardWidth + rowIdx);}}>{cell}</Square>
+      row.map((cell, colIdx) =>
+        <Square key={'board-tr-' + rowIdx * boardWidth + colIdx} onSquareClick={
+          () => {onGameBoardClick(rowIdx, colIdx);}}>{cell}</Square>
       )}
       </tr>
       </tbody>

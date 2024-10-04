@@ -1,15 +1,10 @@
-import { getOpponentPlayer, getStonesToReverse, getWinner, checkIfDraw } from "@/components/templates/Reversi/features";
+import { Player, getOpponentPlayer, getStonesToReverse, getWinner, checkIfDraw } from "@/components/templates/Reversi/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
-export enum Player {
-  Black = '●',
-  White = '○'
-}
-
 export interface ReversiState {
   boardWidth: number;
-  boardData: string[];
+  boardData: string[][];
   currentPlayer: Player;
   winner: Player | null;
   isDraw: boolean;
@@ -17,7 +12,7 @@ export interface ReversiState {
 interface ReversiContext {
   gameState: ReversiState,
   initReversiState: () => void,
-  onGameBoardClick: (index: number) => void
+  onGameBoardClick: (row: number, col: number) => void
 }
 const ReversiContext = createContext({} as ReversiContext);
 export const useReversi = () => React.useContext(ReversiContext);
@@ -38,11 +33,11 @@ type Action =
 export const ReversiProvider: React.FC<{children: ReactNode}> = ({
   children
 }) => {
-  var boardData = Array(64).fill('');
-  boardData[27] = '○';
-  boardData[28] = '●';
-  boardData[35] = '●';
-  boardData[36] = '○';
+  var boardData: string[][] = Array.from(new Array(8), _ => new Array(8).fill(''));
+  boardData[3][3] = '○';
+  boardData[3][4] = '●';
+  boardData[4][3] = '●';
+  boardData[4][4] = '○';
 
   var firstGameState: ReversiState = {
     boardWidth: 8,
@@ -56,19 +51,19 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
       gameState: firstGameState
     }});
   });
-  const onGameBoardClick = (index: number) => {
-    console.debug('click index=' + index);
+  const onGameBoardClick = (row: number, col: number) => {
+    console.debug('click row=' + row + ', col=' + col);
 
-    var stonesToReverse = getStonesToReverse(gameState, index);
+    var stonesToReverse = getStonesToReverse(gameState, row, col);
 
     if (stonesToReverse.length > 0 && gameState.winner == null) {
       var boardData = gameState.boardData;
       var currentPlayer = gameState.currentPlayer;
       var boardWidth = gameState.boardWidth;
-      boardData[index] = currentPlayer;
+      boardData[row][col] = currentPlayer;
 
-      for (var stone of stonesToReverse) {
-        boardData[stone] = currentPlayer;
+      for (var [rowOfStone, colOfStone] of stonesToReverse) {
+        boardData[rowOfStone][colOfStone] = currentPlayer;
       }
 
       currentPlayer = getOpponentPlayer(currentPlayer);
