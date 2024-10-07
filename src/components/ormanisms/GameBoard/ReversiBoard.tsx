@@ -1,3 +1,4 @@
+import { Cell } from "@/components/templates/Reversi/features";
 import { ReversiState as GameState } from '@/providers/ReversiProvider';
 import style from '@/styles/GameBoard.module.css';
 
@@ -16,7 +17,7 @@ const Square: React.FC<SquareProps> = ({children, onSquareClick}) => {
 
 export type GameBoardProps = {
   gameState: GameState,
-  onGameBoardClick: (row: number, col: number) => void;
+  onGameBoardClick: (cell: Cell) => void;
 }
 
 export const GameBoard: React.FC<GameBoardProps> = ({gameState, onGameBoardClick}) => {
@@ -35,7 +36,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({gameState, onGameBoardClick
       // 各行ごとの値を出力する
       row.map((cell, colIdx) =>
         <Square key={'board-tr-' + rowIdx * boardWidth + colIdx} onSquareClick={
-          () => {onGameBoardClick(rowIdx, colIdx);}}>{cell}</Square>
+          () => {onGameBoardClick([rowIdx, colIdx]);}}>{cell}</Square>
       )}
       </tr>
       </tbody>

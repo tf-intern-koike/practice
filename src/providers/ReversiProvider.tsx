@@ -1,4 +1,4 @@
-import { Player, getOpponentPlayer, getStonesToReverse, getWinner, checkIfDraw } from "@/components/templates/Reversi/features";
+import { Player, Cell, getOpponentPlayer, getStonesToReverse, getWinner, checkIfDraw, includes, getPlaceableCells } from "@/components/templates/Reversi/features";
 import React, { useReducer } from "react";
 import { createContext, ReactNode } from "react";
 
@@ -12,7 +12,7 @@ export interface ReversiState {
 interface ReversiContext {
   gameState: ReversiState,
   initReversiState: () => void,
-  onGameBoardClick: (row: number, col: number) => void
+  onGameBoardClick: (cell: Cell) => void
 }
 const ReversiContext = createContext({} as ReversiContext);
 export const useReversi = () => React.useContext(ReversiContext);
@@ -51,29 +51,44 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
       gameState: firstGameState
     }});
   });
-  const onGameBoardClick = (row: number, col: number) => {
+  const onGameBoardClick = (cell: Cell) => {
+    var [row, col] = cell;
     console.debug('click row=' + row + ', col=' + col);
 
-    var stonesToReverse = getStonesToReverse(gameState, row, col);
+    // 置けるセルの一覧を得る
+    var placeableCells = getPlaceableCells(gameState);
 
-    if (stonesToReverse.length > 0 && gameState.winner == null) {
-      var boardData = gameState.boardData;
-      var currentPlayer = gameState.currentPlayer;
+    // 置けるセルがないとき
+    if (placeableCells.size == 0) {
+      // パス
+      var currentPlayer = getOpponentPlayer(gameState.currentPlayer);
       var boardWidth = gameState.boardWidth;
-      boardData[row][col] = currentPlayer;
-
-      for (var [rowOfStone, colOfStone] of stonesToReverse) {
-        boardData[rowOfStone][colOfStone] = currentPlayer;
-      }
-
-      currentPlayer = getOpponentPlayer(currentPlayer);
-      var winner = getWinner(gameState);
-      var isDraw = checkIfDraw(gameState);
+      var winner = gameState.winner;
+      var isDraw = gameState.isDraw;
       dispatch({type: ActionType.updateGameState, payload: {
         gameState: {boardWidth, boardData, currentPlayer, winner, isDraw}
       }});
+    // 置けるセルがあるとき
     } else {
-      console.debug('invelid index!');
+      if (includes(placeableCells, cell) && gameState.winner == null) {
+        var currentPlayer = gameState.currentPlayer;
+        var boardWidth = gameState.boardWidth;
+
+        boardData[row][col] = currentPlayer;
+
+        for (var [rowOfStone, colOfStone] of getStonesToReverse(placeableCells, cell)!) {
+          boardData[rowOfStone][colOfStone] = currentPlayer;
+        }
+
+        currentPlayer = getOpponentPlayer(currentPlayer);
+        var winner = getWinner(gameState);
+        var isDraw = checkIfDraw(gameState);
+        dispatch({type: ActionType.updateGameState, payload: {
+          gameState: {boardWidth, boardData, currentPlayer, winner, isDraw}
+        }});
+      } else {
+        console.debug('invelid index!');
+      }
     }
   }
   const reducer = (_: ReversiState, action: Action): ReversiState => {

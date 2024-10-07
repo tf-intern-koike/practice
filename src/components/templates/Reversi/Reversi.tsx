@@ -28,7 +28,7 @@ export const Reversi: React.FC = () => {
     {ReversiTitle()}
     <div className={style.field}>
       <GameBoard gameState={gameState} onGameBoardClick={
-        (row, col) => onGameBoardClick(row, col)
+        (point) => onGameBoardClick(point)
       } />
       <GameStatus gameState={gameState} onGameResetClick={() => {
         initReversiState();
