@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useEffect } from 'react';
-import { GameBoard } from "@/components/ormanisms/GameBoard";
-import { GameStatus } from '@/components/ormanisms/GameStatus';
+import { GameBoard } from "@/components/ormanisms/GameBoard/MarkGameBoard";
+import { GameStatus } from '@/components/ormanisms/GameStatus/MarkGameStatus';
 import { useMarkGame } from '@/providers/MarkGameProvider';
 import { markGameTitle } from './features';
 import style from '@/styles/MarkGame.module.css';
