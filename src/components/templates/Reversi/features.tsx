@@ -8,19 +8,19 @@ export enum Player {
 export type Cell = [number, number];
 
 function sum(cell1: Cell, cell2: Cell): Cell {
-  var [row1, col1] = cell1;
-  var [row2, col2] = cell2;
+  const [row1, col1] = cell1;
+  const [row2, col2] = cell2;
   return [row1 + row2, col1 + col2];
 }
 
 function offset(cell1: Cell, cell2: Cell): Cell {
-  var [row1, col1] = cell1;
-  var [row2, col2] = cell2;
+  const [row1, col1] = cell1;
+  const [row2, col2] = cell2;
   return [row2 - row1, col2 - col1];
 }
 
 function scales(cell: Cell, scale: number): Cell {
-  var [row, col] = cell;
+  const [row, col] = cell;
   return [row * scale, col * scale];
 }
 
@@ -37,7 +37,7 @@ export function getOpponentPlayer(currentPlayer: Player): Player {
 }
 
 export function isCellEmpty(gameState: GameState, cell: Cell) {
-  var [row, col] = cell;
+  const [row, col] = cell;
   return gameState.boardData[row][col] == '';
 }
 
@@ -55,8 +55,8 @@ function getNeighborhoods(cell: Cell): Cell[] {
     [ 1, -1], [ 1, 0], [ 1, 1]
   ];
 
-  for (var direction of directions) {
-    var neighborhood = sum(cell, direction);
+  for (const direction of directions) {
+    const neighborhood = sum(cell, direction);
     if (!isOutOfGameBoard(neighborhood)) {
       neighborhoods.push(neighborhood);
     }
@@ -66,7 +66,7 @@ function getNeighborhoods(cell: Cell): Cell[] {
 }
 
 function isOutOfGameBoard(cell: Cell): boolean {
-  var [row, col] = cell;
+  const [row, col] = cell;
   return row < 0 || 7 < row || col < 0 || 7 < col;
 }
 
@@ -75,41 +75,33 @@ function isOutOfGameBoard(cell: Cell): boolean {
  * @param index 石を置く座標
  * @return リバースするべき石の座標の配列 石を置けないときは[]
  */
-function traverseStonesToReverse(gameState: GameState, cell: Cell): Cell[] {
+export function traverseStonesToReverse(gameState: GameState, cell: Cell): Cell[] {
   // 石を置く位置が空でないとき
   if (!isCellEmpty(gameState, cell)) {
     return [];
   }
+  const boardData = gameState.boardData;
+  const currentPlayer = gameState.currentPlayer;
+  const opponentPlayer = getOpponentPlayer(currentPlayer!);
 
-  var boardData = gameState.boardData;
-  var currentPlayer = gameState.currentPlayer;
-  var opponentPlayer = getOpponentPlayer(currentPlayer);
-
-  // リバースするべき石の配列
+  // リバースするべき石の座標の配列
   var stonesToReverse: Cell[] = [];
 
-  for (var neighborhood of getNeighborhoods(cell)) {
-    var [rowOfNeighborhood, colOfNeighborhood] = neighborhood;
+  for (const neighborhood of getNeighborhoods(cell)) {
+    const [rowOfNeighborhood, colOfNeighborhood] = neighborhood;
     // 隣接セルに相手の石があるかどうか
     if (boardData[rowOfNeighborhood][colOfNeighborhood] == opponentPlayer) {
-      // 挟まれている可能性のある石の配列
-      var stonesSandwiched = [neighborhood];
+      // 挟まれている可能性のある石の座標の配列
+      const stonesSandwiched = [neighborhood];
       // 置こうとしているセルから見た相手の石の方向
-      var direction = offset(cell, neighborhood);
+      const direction = offset(cell, neighborhood);
       // 相手の石の方向への距離
-      var distance = 1;
-      //  相手の石の方向へ、距離を増やしながら、判定する
-      // ? whileの条件節を使う
-      while (true) {
-        // 判定の対象となるセル
-        distance++;
-        var target = sum(cell, scales(direction, distance));
-        // ゲームボードの外にあるとき、空であるとき
-        if (isOutOfGameBoard(target) || isCellEmpty(gameState, target)) {
-          // stonesSandwichedを破棄
-          break;
-        }
-        var [rowOfTarget, colOfTarget] = target;
+      var distance = 2;
+      // 判定の対象となるセル
+      var target = sum(cell, scales(direction, distance));
+      // ゲームボードの外にあるとき、空であるとき、判定を終了する
+      while (!isOutOfGameBoard(target) && !isCellEmpty(gameState, target)) {
+        const [rowOfTarget, colOfTarget] = target;
         // 判定の対象となるセルが自分の石であるとき
         if (boardData[rowOfTarget][colOfTarget] == currentPlayer) {
           // stonesSandwichedをstonesToReverseに連結
@@ -120,7 +112,9 @@ function traverseStonesToReverse(gameState: GameState, cell: Cell): Cell[] {
         if (boardData[rowOfTarget][colOfTarget] == opponentPlayer) {
           // stonesSandwichedに追加
           stonesSandwiched.push(target);
-          continue;
+          // 相手の石の方向へ、距離を増やしながら、判定を続ける
+          distance++;
+          target = sum(cell, scales(direction, distance))
         }
       }
     }
@@ -128,20 +122,19 @@ function traverseStonesToReverse(gameState: GameState, cell: Cell): Cell[] {
   return stonesToReverse;
 }
 export function getWinner(gameState: GameState) {
-  var boardData = gameState.boardData;
+  const boardData = gameState.boardData;
 
-  // 片方の石が無くなったとき
-  var blackStones = searchInsideGameBoard(boardData, Player.Black)
-  if (blackStones.length == 0) {
-    return Player.White;
-  }
-  var whiteStones = searchInsideGameBoard(boardData, Player.White);
-  if (whiteStones.length == 0) {
-    return Player.Black;
-  }
-  // すべてのセルが埋まったとき
-  var emptyCells = searchInsideGameBoard(boardData, '')
-  if (emptyCells.length == 0) {
+  const gameStateWithCurrentPlayer = gameState;
+  const currentPlayerPlaceableCells = getPlaceableCells(gameStateWithCurrentPlayer);
+  const gameStateWithOpponentPlayer = {
+    ...gameState,
+    currentPlayer: getOpponentPlayer(gameState.currentPlayer!),
+  };
+  const opponetPlayerPlaceableCells = getPlaceableCells(gameStateWithOpponentPlayer);
+  if (currentPlayerPlaceableCells.size == 0 && opponetPlayerPlaceableCells.size == 0) {
+    const blackStones = searchInsideGameBoard(boardData, Player.Black);
+    const whiteStones = searchInsideGameBoard(boardData, Player.White);
+
     if (blackStones.length < whiteStones.length) {
       return Player.White;
     } else if (blackStones.length > whiteStones.length) {
@@ -151,23 +144,20 @@ export function getWinner(gameState: GameState) {
   return null;
 }
 
-export function getPlaceableCells(gameState: GameState): Map<number, Cell[]> {
-  var boardData = gameState.boardData;
-  var emptyCells = searchInsideGameBoard(boardData, '');
-  return emptyCells
-    .map<[Cell, Cell[]]>((cell) => [cell, traverseStonesToReverse(gameState, cell)])
-    .filter(([_, stonesToReverse]) => stonesToReverse.length > 0)
-    .reduce((map, [cell, stonesToReverse]) => setCell(map, cell, stonesToReverse), new Map<number, Cell[]>());
-}
-
 export function checkIfDraw(gameState: GameState) {
-  var boardData = gameState.boardData;
-  var blackStones = searchInsideGameBoard(boardData, Player.Black);
-  var whiteStones = searchInsideGameBoard(boardData, Player.White);
+  const boardData = gameState.boardData;
 
-  // すべてのセルが埋まったとき
-  var emptyCells = searchInsideGameBoard(boardData, '');
-  if (emptyCells.length == 0) {
+  const gameStateWithCurrentPlayer = gameState;
+  const currentPlayerPlaceableCells = getPlaceableCells(gameStateWithCurrentPlayer);
+  const gameStateWithOpponentPlayer = {
+    ...gameState,
+    currentPlayer: getOpponentPlayer(gameState.currentPlayer!),
+  };
+  const opponetPlayerPlaceableCells = getPlaceableCells(gameStateWithOpponentPlayer);
+  if (currentPlayerPlaceableCells.size == 0 && opponetPlayerPlaceableCells.size == 0) {
+    const blackStones = searchInsideGameBoard(boardData, Player.Black);
+    const whiteStones = searchInsideGameBoard(boardData, Player.White);
+
     if (blackStones.length == whiteStones.length) {
       return true;
     }
@@ -176,13 +166,25 @@ export function checkIfDraw(gameState: GameState) {
 }
 
 /**
+ * 「置ける座標」と「その座標に置いたときにリバースするべき石の座標の配列」のマップを得る
+ */
+export function getPlaceableCells(gameState: GameState): Map<number, Cell[]> {
+  const emptyCells = searchInsideGameBoard(gameState.boardData, '');
+  return emptyCells
+    .map<[Cell, Cell[]]>((cell) => [cell, traverseStonesToReverse(gameState, cell)])
+    .filter(([_, stonesToReverse]) => stonesToReverse.length > 0)
+    .reduce((map, [cell, stonesToReverse]) => setCell(map, cell, stonesToReverse), new Map<number, Cell[]>());
+}
+
+/**
  * 与えられた文字列と一致するセルを行の中で検索する
  * @param target 検索する文字列
  * @return 検索する文字列を持つセルの座標の配列
  */
 function searchInsideRow(row: string[], rowIdx: number, target: string): Cell[] {
-  return row.filter((cell) => cell == target)
-    .map((_, colIdx) => [rowIdx, colIdx]);
+  return row.map<[string, number]>((cell, colIdx) => [cell, colIdx])
+    .filter(([cell, _]) => cell === target)
+    .map(([_, colIdx]) => [rowIdx, colIdx]);
 }
 
 /**
@@ -196,8 +198,14 @@ function searchInsideGameBoard(boardData: string[][], target: string): Cell[] {
 }
 
 function cellToNumber(cell: Cell): number {
-  var [row, col] = cell;
+  const [row, col] = cell;
   return row * 8 + col;
+}
+
+function numberToCell(num: number): Cell {
+  const row = Math.floor(num / 8);
+  const col = num % 8;
+  return [row, col];
 }
 
 function setCell(map: Map<number, Cell[]>, cell: Cell, value: Cell[]): Map<number, Cell[]> {
@@ -210,4 +218,10 @@ export function includes(map: Map<number, Cell[]>, cell: Cell): Cell[] | undefin
 
 export function getStonesToReverse(map: Map<number, Cell[]>, cell: Cell): Cell[] | undefined {
   return map.get(cellToNumber(cell));
+}
+
+export function randomPlaceableCell(map: Map<number, Cell[]>): Cell {
+  const placeableCells = Array.from(map.keys());
+  const randomIdx = Math.floor(Math.random() * placeableCells.length);
+  return numberToCell(placeableCells[randomIdx]);
 }
