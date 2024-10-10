@@ -14,7 +14,6 @@ export interface ReversiState {
 interface ReversiContext {
   gameState: ReversiState,
   initReversiState: () => void,
-  onGameBoardClick: () => void,
   onPlaceableCellClick: (cell: Cell, stonesToReverse: Cell[]) => void,
   onPassCheckClick: () => void,
 }
@@ -69,7 +68,6 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
       gameState: firstGameState
     }});
   });
-  const onGameBoardClick = () => {};
   const onPlaceableCellClick = (cell: Cell, stonesToReverse: Cell[]) => {
     const boardWidth = gameState.boardWidth;
     const boardData = gameState.boardData;
@@ -133,7 +131,7 @@ export const ReversiProvider: React.FC<{children: ReactNode}> = ({
   }
   const [gameState, dispatch] = useReducer(reducer, firstGameState);
   return <ReversiContext.Provider value={{
-    gameState, initReversiState, onGameBoardClick, onPlaceableCellClick ,onPassCheckClick
+    gameState, initReversiState, onPlaceableCellClick ,onPassCheckClick
 
   }}>
   {children}

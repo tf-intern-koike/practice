@@ -9,7 +9,7 @@ import style from '@/styles/Reversi.module.css';
 var initEffect = false;
 
 export const Reversi: React.FC = () => {
-  const { gameState, initReversiState, onGameBoardClick, onPlaceableCellClick, onPassCheckClick } = useReversi();
+  const { gameState, initReversiState, onPlaceableCellClick, onPassCheckClick } = useReversi();
 
   useEffect(() => {
     if (initEffect) {
@@ -28,7 +28,6 @@ export const Reversi: React.FC = () => {
     {ReversiTitle()}
     <div className={style.field}>
       <GameBoard gameState={gameState} onGameBoardClick={() => {
-        onGameBoardClick();
       }} onPlaceableClick={
         (cell, stonesToReverse) => onPlaceableCellClick(cell, stonesToReverse)
       } />

@@ -23,8 +23,8 @@ export const GameStatus: React.FC<GameStatusProps> = ({gameState, onGameResetCli
           ? <>●(くろ)</> : <>○(しろ)</>}<br /></>
       }
       {winner != null && <>{winner}が勝ちました。<br /></>}
-      <div onClick={() => {onGameResetClick();}}>リセット</div>
       <div onClick={() => {onPassCheckClick();}}>パス</div>
+      <div onClick={() => {onGameResetClick();}}>リセット</div>
     </div>
   </div>;
 }
@@ -56,8 +56,8 @@ export const GameStatusV2: React.FC<GameStatusPropsV2> = ({gameState, onGameStar
           ? <>●(くろ)</> : <>○(しろ)</>}<br /></>
       }
       {winner != null && <>{winner}が勝ちました。<br /></>}
-      <div onClick={() => {onGameResetClick();}}>リセット</div>
       <div onClick={() => {onPassCheckClick();}}>パス</div>
+      <div onClick={() => {onGameResetClick();}}>リセット</div>
     </div>
   </div>;
 }
