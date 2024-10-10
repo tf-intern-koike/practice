@@ -1,6 +1,6 @@
 import { Reversi } from "@/components/templates/Reversi/Reversi";
 
-const ReversiV2 = () => {
+const ReversiIndex = () => {
   return <>
     <Reversi />
     <br />
@@ -8,4 +8,4 @@ const ReversiV2 = () => {
   </>
 };
 
-export default ReversiV2;
+export default ReversiIndex;
