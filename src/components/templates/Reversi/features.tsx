@@ -212,10 +212,6 @@ function setCell(map: Map<number, Cell[]>, cell: Cell, value: Cell[]): Map<numbe
   return map.set(cellToNumber(cell), value);
 }
 
-export function includes(map: Map<number, Cell[]>, cell: Cell): Cell[] | undefined {
-  return map.get(cellToNumber(cell));
-}
-
 export function getStonesToReverse(map: Map<number, Cell[]>, cell: Cell): Cell[] | undefined {
   return map.get(cellToNumber(cell));
 }

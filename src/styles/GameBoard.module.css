@@ -1,6 +1,13 @@
 .square {
+    background-color: #8EC298;
     border: 1px solid #999;
     height: 32px;
     width: 32px;
     text-align: center;
+}
+.lastPlaced {
+    background-color: #67A2A0;
+}
+.placeable {
+    background-color: #007E66;
 }
